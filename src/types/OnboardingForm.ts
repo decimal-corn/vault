@@ -1,4 +1,4 @@
-export interface FormProps {
+export interface OnboardingFormProps {
   firstName: string
   lastName: string
   corporationNumber: string

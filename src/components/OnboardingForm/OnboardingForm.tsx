@@ -1,4 +1,4 @@
-import { FormikErrors, useFormik } from 'formik'
+import { useFormik } from 'formik'
 import {
   Box,
   Button,
@@ -13,32 +13,13 @@ import {
   Input,
   VStack,
 } from '@chakra-ui/react'
-import * as Yup from 'yup'
-import {
-  submitForm,
-  validateCorporationNumber,
-} from '../../services/VaultService.ts'
-import { FormProps } from '../../types/OnboardingForm.ts'
-import { ObjectSchema } from 'yup'
+import { submitForm } from '../../services/VaultService.ts'
+import { OnboardingFormProps } from '../../types/OnboardingForm.ts'
 import { useCallback, FocusEvent } from 'react'
-
-const onboardingSchema: ObjectSchema<FormProps> = Yup.object().shape({
-  firstName: Yup.string()
-    .max(50, 'First name should be shorter than 50 characters')
-    .required('Field is required'),
-  lastName: Yup.string()
-    .max(50, 'Last name should be shorter than 50 characters')
-    .required('Field is required'),
-  phone: Yup.string()
-    .matches(/\+1[0-9]{10}/, 'Incorrect phone number')
-    .required('Field is required'),
-  corporationNumber: Yup.string()
-    .length(9, 'Incorrect Corporation Number length')
-    .required('Field is required'),
-})
+import { OnboardingFormValidationSchema } from './ValidationSchema.ts'
 
 export const OnboardingForm = () => {
-  const formik = useFormik<FormProps>({
+  const formik = useFormik<OnboardingFormProps>({
     initialValues: {
       firstName: '',
       lastName: '',
@@ -55,20 +36,7 @@ export const OnboardingForm = () => {
         formik.setStatus(result.message)
       }
     },
-    validationSchema: onboardingSchema,
-    validate: async (values) => {
-      const validationResult: FormikErrors<FormProps> = {}
-      // Avoid calling validation endpoint if error is found by Yup
-      if (values.corporationNumber && !formik.errors.corporationNumber) {
-        const corporationNumberValidationResult =
-          await validateCorporationNumber(values.corporationNumber)
-        if (!corporationNumberValidationResult.valid) {
-          validationResult.corporationNumber =
-            corporationNumberValidationResult.message ?? ''
-        }
-      }
-      return validationResult
-    },
+    validationSchema: OnboardingFormValidationSchema,
   })
 
   const onFieldBlur = useCallback(

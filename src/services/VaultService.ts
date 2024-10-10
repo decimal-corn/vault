@@ -1,6 +1,6 @@
-import { FormProps } from '../types/OnboardingForm.ts'
+import { OnboardingFormProps } from '../types/OnboardingForm.ts'
 
-const baseURL = 'https://fe-hometask-api.dev.vault.tryvault.com'
+const BaseURL = 'https://fe-hometask-api.dev.vault.tryvault.com'
 
 interface CorporationNumberValidationResult {
   valid: boolean
@@ -15,7 +15,7 @@ interface FormSubmitResult {
 export const validateCorporationNumber = async (
   numberToCheck: string,
 ): Promise<CorporationNumberValidationResult> => {
-  return fetch(`${baseURL}/corporation-number/${numberToCheck}`)
+  return fetch(`${BaseURL}/corporation-number/${numberToCheck}`)
     .then(async (response) => {
       return await response.json()
     })
@@ -25,9 +25,9 @@ export const validateCorporationNumber = async (
 }
 
 export const submitForm = async (
-  formData: FormProps,
+  formData: OnboardingFormProps,
 ): Promise<FormSubmitResult | undefined> => {
-  return fetch(`${baseURL}/profile-details`, {
+  return fetch(`${BaseURL}/profile-details`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(formData),
